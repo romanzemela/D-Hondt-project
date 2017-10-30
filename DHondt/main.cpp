@@ -33,6 +33,15 @@ int main()
             iloscpartii ++;
         }
 
+        if( plikwejscia.fail())
+        {
+            cout << "Zle zapisane dane w pliku tekstowym " << endl;
+            cout << "Sprawdz czy: " << endl;
+            cout << "- Kazdy parametr jest liczba naturalna" << endl;
+            cout << "- Wartosci sa oddzielone spacjami" << endl;
+            cout << "- Na koncu nie ma znaku bialego" << endl;
+            cout << "- Dane sa podane tylko w pierwszej linii" << endl;
+        }
     plikwejscia.close();
     }else{
 
