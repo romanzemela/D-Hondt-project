@@ -14,24 +14,26 @@ int main()
     int glosy[100];
     float calcTab[100];
     float maks;
-    int iloscpartii;
+    int iloscpartii = 0;
     int iloscmandatow;
     int miejscemax;
-    const int MAX = 100;
+    const int MAX = 100;  // maksymalna ilosc partii
 
-    fstream plik;
-    plik.open( "test.txt",ios::in);
-    if( plik.good())
+    ifstream plikwejscia;
+    plikwejscia.open("test.txt",ios::in);
+    if( plikwejscia.good())
     {
 
-        plik >> iloscmandatow; // pobieramy z plikow ilosc mandatow
+        plikwejscia >> iloscmandatow; // pobieramy z pliku ilosc mandatow
 
         // pobieranie z pliku ilosc glosow na kazda partie
-        for(int i = 0; i < MAX; i++)
+        for(int i = 0; i < MAX && !plikwejscia.eof(); i++)
         {
-            plik >> glosy[i];
+            plikwejscia >> glosy[i];
+            iloscpartii ++;
         }
-    plik.close();
+
+    plikwejscia.close();
     }else{
 
             // pobranie wartosci z konsoli gdy nie ma mozliwosci pobrania z pliku
@@ -78,10 +80,25 @@ int main()
         calcTab[miejscemax] = nowawartosc(glosy[miejscemax], mandaty[miejscemax]);
     }
 
-    // wyswietlanie wynikow
-    for (int i = 0; i < iloscpartii; i++)
+
+    fstream plikwyjscia;
+    plikwyjscia.open("wynik.txt",ios::in);
+    if( plikwyjscia.good())
     {
-        cout << "Partia " << i + 1  << " ma " << mandaty[i] << " mandatow" << endl;
+        plikwyjscia.close();
+        plikwyjscia.open("wynik.txt",ios::out);
+        for (int i = 0; i < iloscpartii; i++)
+            {
+                plikwyjscia << mandaty[i] << endl;
+            }
+
+    } else {
+        plikwyjscia.close();
+        // wyswietlanie wynikow
+        for (int i = 0; i < iloscpartii; i++)
+        {
+            cout << mandaty[i] << endl;
+        }
     }
 
     return 0;
