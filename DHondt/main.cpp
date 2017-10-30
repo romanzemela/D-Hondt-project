@@ -57,6 +57,10 @@ int main()
                 cout << "Podaj liczbe glosow na partie " << i+1 << endl;
                 cin >> glosy[i];
             }
+        if(!cin)
+        {
+            cout << "wpisales bledne dane";
+        }
 
     }
     // wyzerowanie mandat—w dla kaýdej partii
