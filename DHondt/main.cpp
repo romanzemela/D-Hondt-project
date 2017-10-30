@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -16,20 +17,37 @@ int main()
     int iloscpartii;
     int iloscmandatow;
     int miejscemax;
+    const int MAX = 100;
 
-    //get all data
-    cout << "Podaj liczbe partii (max. 100)" << endl;
-    cin >> iloscpartii;
-
-    cout << "Podaj liczbe mandatow" << endl;
-    cin >> iloscmandatow;
-
-    for (int i = 0; i < iloscpartii; i++)
+    fstream plik;
+    plik.open( "test.txt",ios::in);
+    if( plik.good())
     {
-        cout << "Podaj liczbe glosow na partie " << i+1 << endl;
-        cin >> glosy[i];
-    }
 
+        plik >> iloscmandatow; // pobieramy z plikow ilosc mandatow
+
+        // pobieranie z pliku ilosc glosow na kazda partie
+        for(int i = 0; i < MAX; i++)
+        {
+            plik >> glosy[i];
+        }
+    plik.close();
+    }else{
+
+            // pobranie wartosci z konsoli gdy nie ma mozliwosci pobrania z pliku
+            cout << "Podaj liczbe partii (max. 100)" << endl;
+            cin >> iloscpartii;
+
+            cout << "Podaj liczbe mandatow" << endl;
+            cin >> iloscmandatow;
+
+            for (int i = 0; i < iloscpartii; i++)
+            {
+                cout << "Podaj liczbe glosow na partie " << i+1 << endl;
+                cin >> glosy[i];
+            }
+
+    }
     // wyzerowanie mandat—w dla kaýdej partii
     for (int i = 0; i < iloscpartii; i++)
     {
