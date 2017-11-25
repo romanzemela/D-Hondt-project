@@ -8,16 +8,13 @@
 
 using namespace std;
 
-//funkcje:
-
-//1
-void wyzerowanie_mandatow(unsigned int mandaty[ ], unsigned int iloscpartii)
+void Wyzerowanie_mandatow(unsigned int mandaty[ ], unsigned int iloscpartii)
 {
     for (int i = 0; i < iloscpartii; i++)
         mandaty[i] = 0;
-};
-//2
-bool odczytaj_argumenty(int ile , char ** argumenty , string & szInput , string & szOutput)
+}
+
+bool Odczytaj_argumenty(int ile , char ** argumenty , string & szInput , string & szOutput)
 {
     const string ETYKIETAINPUT ("-i");
     const string ETYKIETAOUTPUT ("-o");
@@ -48,8 +45,8 @@ bool odczytaj_argumenty(int ile , char ** argumenty , string & szInput , string 
     else
         return false;
 }
-//3
-void wartosci_z_konsoli(unsigned int &iloscpartii, unsigned int &iloscmandatow, unsigned int glosy[ ])
+
+void Wartosci_z_konsoli(unsigned int &iloscpartii, unsigned int &iloscmandatow, unsigned int glosy[ ])
 {
     cout << "Podaj liczbe partii (max. 100)" << endl;
     cin >> iloscpartii;
@@ -67,8 +64,8 @@ void wartosci_z_konsoli(unsigned int &iloscpartii, unsigned int &iloscmandatow, 
         cout << endl << "wpisales bledne dane" << endl;
     }
 }
-//4
-void pobieranie_danych(string wejscie, unsigned int &iloscpartii, int MAX, unsigned int glosy[ ], unsigned int &iloscmandatow)
+
+void Pobieranie_danych(string wejscie, unsigned int &iloscpartii, int MAX, unsigned int glosy[ ], unsigned int &iloscmandatow)
 {
     ifstream plikwejscia;
     plikwejscia.open("../dat/" + wejscie + ".txt", ios::in);
@@ -91,29 +88,41 @@ void pobieranie_danych(string wejscie, unsigned int &iloscpartii, int MAX, unsig
     else
     {
         cout << " Nie podano lub nie znaleziono pliku wejsciowego" << endl;
-        //3
-        wartosci_z_konsoli(iloscpartii, iloscmandatow, glosy);
+        Wartosci_z_konsoli(iloscpartii, iloscmandatow, glosy);
     }
 }
-//5
-float nowa_wartosc(unsigned int glosy, unsigned int mandaty)
+
+float Nowa_wartosc(unsigned int glosy, unsigned int mandaty)
 {
     return (glosy) / (mandaty + 1);
-};
-//7
-void wyswietl_wyniki(unsigned int iloscpartii,unsigned int mandaty[ ])
+}
+
+
+void Wyswietl_wyniki(unsigned int iloscpartii,unsigned int mandaty[ ])
 {
     for (int i = 0; i < iloscpartii; i++)
         cout << mandaty[i] << endl;
 }
 
-//8
-//void wynik()
-//{
+void Wynik(string wyjscie, unsigned int iloscpartii, unsigned int mandaty[ ])
+{
+    fstream plikwyjscia;
+    plikwyjscia.open("../dat/" + wyjscie + ".txt",ios::in);
+    if( plikwyjscia.good())
+    {
+        plikwyjscia.close();
+        plikwyjscia.open("../dat/" + wyjscie + ".txt",ios::out);
+        for (int i = 0; i < iloscpartii; i++)
+        {
+            plikwyjscia << mandaty[i] << endl;
+        }
+        
+    } else {
+        plikwyjscia.close();
+        Wyswietl_wyniki(iloscpartii, mandaty);
+    }
     
-//}
-
-// main:
+}
 
 int main(int ile, char ** argumenty)
 {
@@ -122,7 +131,6 @@ int main(int ile, char ** argumenty)
     unsigned int mandaty[MAX];
     unsigned int glosy[MAX];
     double baza_glosow[MAX];
-    double maks;
     unsigned int iloscpartii = 0;
     unsigned int iloscmandatow;
     unsigned int miejscemax = 0;
@@ -130,14 +138,9 @@ int main(int ile, char ** argumenty)
     string nazwa_pliku_wejscia;
     string nazwa_pliku_wyjsca;
     
-    //2
-    odczytaj_argumenty(ile, argumenty, nazwa_pliku_wejscia, nazwa_pliku_wyjsca);
-    
-    //4
-    pobieranie_danych(nazwa_pliku_wejscia, iloscpartii, MAX, glosy, iloscmandatow);
-    
-    //1
-    wyzerowanie_mandatow( mandaty, iloscpartii);
+    Odczytaj_argumenty(ile, argumenty, nazwa_pliku_wejscia, nazwa_pliku_wyjsca);
+    Pobieranie_danych(nazwa_pliku_wejscia, iloscpartii, MAX, glosy, iloscmandatow);
+    Wyzerowanie_mandatow( mandaty, iloscpartii);
     
     // podzial mandatów metodą d'Hondta
     
@@ -147,9 +150,9 @@ int main(int ile, char ** argumenty)
     for (int i = 0 ; i < iloscmandatow; i++)
     {
         // szukanie najwiekszej wartosci
-        maks = -1;
+        double maks = baza_glosow[0];
         for (int j = 0 ; j< iloscpartii; j++)
-            if (maks < baza_glosow[j])
+            if (maks <= baza_glosow[j])
             {
                 maks = baza_glosow[j];
                 miejscemax = j;
@@ -157,27 +160,10 @@ int main(int ile, char ** argumenty)
         
         // partia z najwieksza wartoscia dostaje mandat
         mandaty[miejscemax]++;
-        //5
-        baza_glosow[miejscemax] = nowa_wartosc(glosy[miejscemax], mandaty[miejscemax]);
+        baza_glosow[miejscemax] = Nowa_wartosc(glosy[miejscemax], mandaty[miejscemax]);
     }
     
-    
-    fstream plikwyjscia;
-    plikwyjscia.open("../dat/" + nazwa_pliku_wyjsca + ".txt",ios::in);
-    if( plikwyjscia.good())
-    {
-        plikwyjscia.close();
-        plikwyjscia.open("../dat/" + nazwa_pliku_wyjsca + ".txt",ios::out);
-        for (int i = 0; i < iloscpartii; i++)
-        {
-            plikwyjscia << mandaty[i] << endl;
-        }
-        
-    } else {
-        plikwyjscia.close();
-        //7
-        wyswietl_wyniki(iloscpartii, mandaty);
-    }
-    
+    Wynik(nazwa_pliku_wyjsca, iloscpartii, mandaty);
+
     return 0;
 }
