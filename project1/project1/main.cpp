@@ -10,36 +10,13 @@ using namespace std;
 
 //funkcje:
 
-float nowa_wartosc(unsigned int glosy, unsigned int mandaty)
-{
-    return (glosy) / (mandaty + 1);
-};
-
+//1
 void wyzerowanie_mandatow(unsigned int mandaty[ ], unsigned int iloscpartii)
 {
     for (int i = 0; i < iloscpartii; i++)
         mandaty[i] = 0;
 };
-
-void wartosci_z_konsoli(unsigned int &iloscpartii, unsigned int &iloscmandatow, unsigned int glosy[ ])
-{
-    cout << "Podaj liczbe partii (max. 100)" << endl;
-    cin >> iloscpartii;
-    
-    cout << "Podaj liczbe mandatow" << endl;
-    cin >> iloscmandatow;
-    
-    for (int i = 0; i < iloscpartii; i++)
-    {
-        cout << "Podaj liczbe glosow na partie " << i+1 << endl;
-        cin >> glosy[i];
-    }
-    if(!cin)
-    {
-        cout << "wpisales bledne dane";
-    }
-}
-
+//2
 bool odczytaj_argumenty(int ile , char ** argumenty , string & szInput , string & szOutput)
 {
     const string ETYKIETAINPUT ("-i");
@@ -71,33 +48,30 @@ bool odczytaj_argumenty(int ile , char ** argumenty , string & szInput , string 
     else
         return false;
 }
-
-void wyswietl_wyniki(unsigned int iloscpartii,unsigned int mandaty[ ])
+//3
+void wartosci_z_konsoli(unsigned int &iloscpartii, unsigned int &iloscmandatow, unsigned int glosy[ ])
 {
+    cout << "Podaj liczbe partii (max. 100)" << endl;
+    cin >> iloscpartii;
+    
+    cout << "Podaj liczbe mandatow" << endl;
+    cin >> iloscmandatow;
+    
     for (int i = 0; i < iloscpartii; i++)
-        cout << mandaty[i] << endl;
+    {
+        cout << "Podaj liczbe glosow na partie " << i+1 << endl;
+        cin >> glosy[i];
+    }
+    if(!cin)
+    {
+        cout << endl << "wpisales bledne dane" << endl;
+    }
 }
-
-// main:
-
-int main(int ile, char ** argumenty)
+//4
+void pobieranie_danych(string wejscie, unsigned int &iloscpartii, int MAX, unsigned int glosy[ ], unsigned int &iloscmandatow)
 {
-    const int MAX = 100;  // maksymalna ilosc partii
-    unsigned int mandaty[MAX];
-    unsigned int glosy[MAX];
-    double baza_glosow[MAX];
-    double maks;
-    unsigned int iloscpartii = 0;
-    unsigned int iloscmandatow;
-    unsigned int miejscemax = 0;
-
-    string nazwa_pliku_wejscia;
-    string nazwa_pliku_wyjsca;
-    
-    odczytaj_argumenty(ile, argumenty, nazwa_pliku_wejscia, nazwa_pliku_wyjsca);
-    
     ifstream plikwejscia;
-    plikwejscia.open("../dat/" + nazwa_pliku_wejscia + ".txt", ios::in);
+    plikwejscia.open("../dat/" + wejscie + ".txt", ios::in);
     if( plikwejscia.good())
     {
         plikwejscia >> iloscmandatow;
@@ -117,8 +91,52 @@ int main(int ile, char ** argumenty)
     else
     {
         cout << " Nie podano lub nie znaleziono pliku wejsciowego" << endl;
+        //3
         wartosci_z_konsoli(iloscpartii, iloscmandatow, glosy);
     }
+}
+//5
+float nowa_wartosc(unsigned int glosy, unsigned int mandaty)
+{
+    return (glosy) / (mandaty + 1);
+};
+//7
+void wyswietl_wyniki(unsigned int iloscpartii,unsigned int mandaty[ ])
+{
+    for (int i = 0; i < iloscpartii; i++)
+        cout << mandaty[i] << endl;
+}
+
+//8
+//void wynik()
+//{
+    
+//}
+
+// main:
+
+int main(int ile, char ** argumenty)
+{
+    // deklaracja zmiennych:
+    const int MAX = 100;  // maksymalna ilosc partii
+    unsigned int mandaty[MAX];
+    unsigned int glosy[MAX];
+    double baza_glosow[MAX];
+    double maks;
+    unsigned int iloscpartii = 0;
+    unsigned int iloscmandatow;
+    unsigned int miejscemax = 0;
+
+    string nazwa_pliku_wejscia;
+    string nazwa_pliku_wyjsca;
+    
+    //2
+    odczytaj_argumenty(ile, argumenty, nazwa_pliku_wejscia, nazwa_pliku_wyjsca);
+    
+    //4
+    pobieranie_danych(nazwa_pliku_wejscia, iloscpartii, MAX, glosy, iloscmandatow);
+    
+    //1
     wyzerowanie_mandatow( mandaty, iloscpartii);
     
     // podzial mandatów metodą d'Hondta
@@ -139,6 +157,7 @@ int main(int ile, char ** argumenty)
         
         // partia z najwieksza wartoscia dostaje mandat
         mandaty[miejscemax]++;
+        //5
         baza_glosow[miejscemax] = nowa_wartosc(glosy[miejscemax], mandaty[miejscemax]);
     }
     
@@ -156,7 +175,7 @@ int main(int ile, char ** argumenty)
         
     } else {
         plikwyjscia.close();
-        // wyswietlanie wynikow
+        //7
         wyswietl_wyniki(iloscpartii, mandaty);
     }
     
