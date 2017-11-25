@@ -10,12 +10,22 @@ using namespace std;
 
 void Pomoc()
 {
-    cout << endl << " WYZNACZANIE ILOŚCI MANDATÓW UZYSKANYCH W WYBORACH PARLAMENTARNYCH ( METODA D'HONDT)" << endl << " Jeżeli chcemy wykorzystać dane z pliku:" << endl << endl << " Pierwsza wartoscią wymaganą jest ilość mandatów." << endl << " Następne wartości są głosami na poszczególne partie. " << endl << " Wszystkie wartosci powinny byc oddzielone spacją." << endl << " Wszystkie wartosci powinny byc liczbami naturalnymi." << endl << " Ilosc partii nie powinna przekraczać 100." << endl << " Jeżeli chcemy wykorzystać dane z wejścia standardowego:" << endl << endl << " Wartosci podawane powinny byc liczbami naturalnymi.";
+    cout
+    << endl << " WYZNACZANIE ILOŚCI MANDATÓW UZYSKANYCH W WYBORACH PARLAMENTARNYCH ( METODA D'HONDT)"
+    << endl << " Jeżeli chcemy wykorzystać dane z pliku:" << endl
+    << endl << "- Pierwszą wartoscią wymaganą jest ilość mandatów."
+    << endl << "- Następne wartości są głosami na poszczególne partie. "
+    << endl << "- Wszystkie wartosci powinny byc oddzielone spacją."
+    << endl << "- Wszystkie wartosci powinny byc liczbami naturalnymi."
+    << endl << "- Ilosc partii nie powinna przekraczać 100."
+    << endl << " Jeżeli chcemy wykorzystać dane z wejścia standardowego:" << endl
+    << endl << "- Wartosci podawane powinny byc liczbami naturalnymi."
+    << endl << "- Ilosc partii nie powinna przekraczać 100." << endl;
 }
 
-void Poprawnosc_danych(bool & poprawne_dane)
+void Poprawnosc_danych(bool & poprawne_dane,unsigned int & iloscpartii)
 {
-    if(!cin)
+    if(!cin || iloscpartii > 100)
     {
         cout << endl << " Wpisales bledne dane" << endl;
         poprawne_dane = false;
@@ -34,17 +44,19 @@ void Odczytaj_argumenty(int ile , char ** argumenty , string & szInput , string 
     const string ETYKIETAOUTPUT ("-o");
     const string ETYKIETAHELP ("-h");
     
-    for(int i = 1; i < ile - 1; i++)
+    for(int i = 1; i < ile; i++)
     {
         string arg (argumenty[i]);
+        
+        if (arg == ETYKIETAHELP)
+            Pomoc();
         
         if (arg == ETYKIETAINPUT)
             szInput = argumenty[i + 1];
         
         if (arg == ETYKIETAOUTPUT)
             szOutput = argumenty [i + 1];
-        if (arg == ETYKIETAHELP)
-            Pomoc();
+        
     }
     
 }
@@ -58,13 +70,13 @@ bool Wartosci_z_konsoli(unsigned int &iloscpartii, unsigned int &iloscmandatow, 
     cout << " Podaj liczbe partii (max. 100)" << endl;
     cin >> iloscpartii;
     
-    Poprawnosc_danych(poprawne_dane);
+    Poprawnosc_danych(poprawne_dane, iloscpartii);
     
     if(poprawne_dane)
     {
         cout << " Podaj liczbe mandatow" << endl;
         cin >> iloscmandatow;
-        Poprawnosc_danych(poprawne_dane);
+        Poprawnosc_danych(poprawne_dane, iloscpartii);
     }
     
     
@@ -74,7 +86,7 @@ bool Wartosci_z_konsoli(unsigned int &iloscpartii, unsigned int &iloscmandatow, 
         {
             cout << " Podaj liczbe glosow na partie " << i+1 << endl;
             cin >> glosy[i];
-            Poprawnosc_danych(poprawne_dane);
+            Poprawnosc_danych(poprawne_dane, iloscpartii);
         }
     }
     return poprawne_dane;
