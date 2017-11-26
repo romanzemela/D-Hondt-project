@@ -130,7 +130,7 @@ double Nowa_wartosc(unsigned int glosy, unsigned int mandaty)
 }
 
 
-void Wyswietl_wyniki(unsigned int iloscpartii,unsigned int mandaty[ ])
+void Wynik_konsola(unsigned int iloscpartii,unsigned int mandaty[ ])
 {
     cout << " Podzial mandatow:" << endl;
     for (int i = 0; i < iloscpartii; i++)
@@ -140,19 +140,16 @@ void Wyswietl_wyniki(unsigned int iloscpartii,unsigned int mandaty[ ])
 void Wynik(string wyjscie, unsigned int iloscpartii, unsigned int mandaty[ ])
 {
     fstream plikwyjscia;
-    plikwyjscia.open("../dat/" + wyjscie + ".txt",ios::in);
-    if( plikwyjscia.good())
+    if(wyjscie.empty())
+        Wynik_konsola(iloscpartii, mandaty);
+    else
     {
-        plikwyjscia.close();
         plikwyjscia.open("../dat/" + wyjscie + ".txt",ios::out);
         for (int i = 0; i < iloscpartii; i++)
         {
             plikwyjscia << mandaty[i] << endl;
         }
-        
-    } else {
         plikwyjscia.close();
-        Wyswietl_wyniki(iloscpartii, mandaty);
     }
     
 }
