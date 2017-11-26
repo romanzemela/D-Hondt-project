@@ -11,14 +11,14 @@ using namespace std;
 void Pomoc()
 {
     cout
-    << endl << " WYZNACZANIE ILOŚCI MANDATÓW UZYSKANYCH W WYBORACH PARLAMENTARNYCH ( METODA D'HONDT)"
-    << endl << " Jeżeli chcemy wykorzystać dane z pliku:" << endl
-    << endl << "- Pierwszą wartoscią wymaganą jest ilość mandatów."
-    << endl << "- Następne wartości są głosami na poszczególne partie. "
-    << endl << "- Wszystkie wartosci powinny byc oddzielone spacją."
+    << endl << " WYZNACZANIE ILOSCI MANDATOW UZYSKANYCH W WYBORACH PARLAMENTARNYCH ( METODA D'HONDT)" << endl
+    << endl << " Jezeli chcemy wykorzystac dane z pliku:" << endl
+    << endl << "- Pierwsza wartoscia wymagana jest ilosc mandatow."
+    << endl << "- Nastepne wartosci są glosami na poszczegolne partie. "
+    << endl << "- Wszystkie wartosci powinny byc oddzielone spacja."
     << endl << "- Wszystkie wartosci powinny byc liczbami naturalnymi."
-    << endl << "- Ilosc partii nie powinna przekraczać 100."
-    << endl << " Jeżeli chcemy wykorzystać dane z wejścia standardowego:" << endl
+    << endl << "- Ilosc partii nie powinna przekraczac 100." << endl
+    << endl << " Jezeli chcemy wykorzystac dane z wejscia standardowego:" << endl
     << endl << "- Wartosci podawane powinny byc liczbami naturalnymi."
     << endl << "- Ilosc partii nie powinna przekraczać 100." << endl;
 }
@@ -27,7 +27,7 @@ void Poprawnosc_danych(bool & poprawne_dane,unsigned int & iloscpartii)
 {
     if(!cin || iloscpartii > 100)
     {
-        cout << endl << " Wpisales bledne dane" << endl;
+        cout << endl << " Wpisales bledne dane." << endl;
         poprawne_dane = false;
     }
 }
@@ -67,14 +67,14 @@ bool Wartosci_z_konsoli(unsigned int &iloscpartii, unsigned int &iloscmandatow, 
 {
     bool poprawne_dane = true;
     
-    cout << " Podaj liczbe partii (max. 100)" << endl;
+    cout << " Podaj liczbe partii (max. 100)." << endl;
     cin >> iloscpartii;
     
     Poprawnosc_danych(poprawne_dane, iloscpartii);
     
     if(poprawne_dane)
     {
-        cout << " Podaj liczbe mandatow" << endl;
+        cout << " Podaj liczbe mandatow." << endl;
         cin >> iloscmandatow;
         Poprawnosc_danych(poprawne_dane, iloscpartii);
     }
@@ -84,7 +84,7 @@ bool Wartosci_z_konsoli(unsigned int &iloscpartii, unsigned int &iloscmandatow, 
     {
         if(poprawne_dane)
         {
-            cout << " Podaj liczbe glosow na partie " << i+1 << endl;
+            cout << " Podaj liczbe glosow na partie." << i+1 << endl;
             cin >> glosy[i];
             Poprawnosc_danych(poprawne_dane, iloscpartii);
         }
@@ -111,20 +111,20 @@ bool Pobieranie_danych(string wejscie, unsigned int &iloscpartii, int MAX, unsig
         if( plikwejscia.fail())
         {
             poprawne_dane = false;
-            cout << " Zle zapisane dane w pliku tekstowym " << endl;
+            cout << " Zle zapisane dane w pliku tekstowym." << endl;
         }
         plikwejscia.close();
     }
     else
     {
-        cout << endl << " Nie podano lub nie znaleziono pliku wejsciowego" << endl;
+        cout << endl << " Nie podano lub nie znaleziono pliku wejsciowego." << endl;
         if(!Wartosci_z_konsoli(iloscpartii, iloscmandatow, glosy))
             poprawne_dane = false;
     }
     return poprawne_dane;
 }
 
-float Nowa_wartosc(unsigned int glosy, unsigned int mandaty)
+double Nowa_wartosc(unsigned int glosy, unsigned int mandaty)
 {
     return (glosy) / (mandaty + 1);
 }
@@ -132,8 +132,9 @@ float Nowa_wartosc(unsigned int glosy, unsigned int mandaty)
 
 void Wyswietl_wyniki(unsigned int iloscpartii,unsigned int mandaty[ ])
 {
+    cout << " Podzial mandatow:" << endl;
     for (int i = 0; i < iloscpartii; i++)
-        cout << mandaty[i] << endl;
+        cout << "partia" << i + 1 << ": " << mandaty[i] << endl;
 }
 
 void Wynik(string wyjscie, unsigned int iloscpartii, unsigned int mandaty[ ])
@@ -182,9 +183,9 @@ int main(int ile, char ** argumenty)
         for (int i = 0 ; i < iloscmandatow; i++)
         {
             // szukanie najwiekszej wartosci
-            double maks = baza_glosow[0];
+            double maks = -1;
             for (int j = 0 ; j< iloscpartii; j++)
-                if (maks <= baza_glosow[j])
+                if (maks < baza_glosow[j])
                 {
                     maks = baza_glosow[j];
                     miejscemax = j;
