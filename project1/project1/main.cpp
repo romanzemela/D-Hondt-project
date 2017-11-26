@@ -129,6 +129,30 @@ double Nowa_wartosc(unsigned int glosy, unsigned int mandaty)
     return (glosy) / (mandaty + 1);
 }
 
+void Podzial_mandatow(const int MAX, unsigned int iloscpartii, unsigned int glosy [ ], unsigned int iloscmandatow, unsigned int mandaty [ ])
+{
+    // podzial mandatów metodą d'Hondta
+    double baza_glosow[MAX];
+    int miejscemax = 0;
+    for (int i = 0; i < iloscpartii; i++)
+        baza_glosow[i] = glosy[i];
+    
+    for (int i = 0 ; i < iloscmandatow; i++)
+    {
+        // szukanie najwiekszej wartosci
+        double maks = -1;
+        for (int j = 0 ; j< iloscpartii; j++)
+            if (maks < baza_glosow[j])
+            {
+                maks = baza_glosow[j];
+                miejscemax = j;
+            }
+        
+        // partia z najwieksza wartoscia dostaje mandat
+        mandaty[miejscemax]++;
+        baza_glosow[miejscemax] = Nowa_wartosc(glosy[miejscemax], mandaty[miejscemax]);
+    }
+}
 
 void Wynik_konsola(unsigned int iloscpartii,unsigned int mandaty[ ])
 {
@@ -156,7 +180,6 @@ void Wynik(string wyjscie, unsigned int iloscpartii, unsigned int mandaty[ ])
 
 int main(int ile, char ** argumenty)
 {
-    // deklaracja zmiennych:
     const int MAX = 100;  // maksymalna ilosc partii
     unsigned int mandaty[MAX];
     unsigned int glosy[MAX];
@@ -167,33 +190,12 @@ int main(int ile, char ** argumenty)
     string nazwa_pliku_wyjsca;
     
     Odczytaj_argumenty(ile, argumenty, nazwa_pliku_wejscia, nazwa_pliku_wyjsca);
+    
     if(Pobieranie_danych(nazwa_pliku_wejscia, iloscpartii, MAX, glosy, iloscmandatow))
     {
         Wyzerowanie_mandatow( mandaty, iloscpartii);
-    
-        // podzial mandatów metodą d'Hondta
-        double baza_glosow[MAX];
-        int miejscemax = 0;
-        for (int i = 0; i < iloscpartii; i++)
-            baza_glosow[i] = glosy[i];
-    
-        for (int i = 0 ; i < iloscmandatow; i++)
-        {
-            // szukanie najwiekszej wartosci
-            double maks = -1;
-            for (int j = 0 ; j< iloscpartii; j++)
-                if (maks < baza_glosow[j])
-                {
-                    maks = baza_glosow[j];
-                    miejscemax = j;
-                }
-        
-            // partia z najwieksza wartoscia dostaje mandat
-            mandaty[miejscemax]++;
-            baza_glosow[miejscemax] = Nowa_wartosc(glosy[miejscemax], mandaty[miejscemax]);
-        }
-    
+        Podzial_mandatow(MAX, iloscpartii, glosy, iloscmandatow, mandaty);
         Wynik(nazwa_pliku_wyjsca, iloscpartii, mandaty);
-        }
+    }
     return 0;
 }
