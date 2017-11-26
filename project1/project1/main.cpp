@@ -56,14 +56,10 @@ void Odczytaj_argumenty(int ile , char ** argumenty , string & szInput , string 
         
         if (arg == ETYKIETAOUTPUT)
             szOutput = argumenty [i + 1];
-        
     }
-    
 }
 
-
-
-bool Wartosci_z_konsoli(unsigned int &iloscpartii, unsigned int &iloscmandatow, unsigned int glosy[ ])
+bool Wartosci_z_konsoli(unsigned int glosy[ ], unsigned int &iloscpartii, unsigned int &iloscmandatow)
 {
     bool poprawne_dane = true;
     
@@ -92,7 +88,7 @@ bool Wartosci_z_konsoli(unsigned int &iloscpartii, unsigned int &iloscmandatow, 
     return poprawne_dane;
 }
 
-bool Pobieranie_danych(string wejscie, unsigned int &iloscpartii, int MAX, unsigned int glosy[ ], unsigned int &iloscmandatow)
+bool Pobieranie_danych(string wejscie, int MAX, unsigned int glosy[ ], unsigned int &iloscpartii, unsigned int &iloscmandatow)
 {
     bool poprawne_dane = true;
     ifstream plikwejscia;
@@ -118,7 +114,7 @@ bool Pobieranie_danych(string wejscie, unsigned int &iloscpartii, int MAX, unsig
     else
     {
         cout << endl << " Nie podano lub nie znaleziono pliku wejsciowego." << endl;
-        if(!Wartosci_z_konsoli(iloscpartii, iloscmandatow, glosy))
+        if(!Wartosci_z_konsoli(glosy, iloscpartii, iloscmandatow))
             poprawne_dane = false;
     }
     return poprawne_dane;
@@ -129,11 +125,11 @@ double Nowa_wartosc(unsigned int glosy, unsigned int mandaty)
     return (glosy) / (mandaty + 1);
 }
 
-void Podzial_mandatow(const int MAX, unsigned int iloscpartii, unsigned int glosy [ ], unsigned int iloscmandatow, unsigned int mandaty [ ])
+void Podzial_mandatow(const int MAX, unsigned int mandaty [ ], unsigned int glosy [ ], unsigned int iloscpartii, unsigned int iloscmandatow)
 {
-    // podzial mandatów metodą d'Hondta
     double baza_glosow[MAX];
     int miejscemax = 0;
+    // kopia tablicy glosow
     for (int i = 0; i < iloscpartii; i++)
         baza_glosow[i] = glosy[i];
     
@@ -154,7 +150,7 @@ void Podzial_mandatow(const int MAX, unsigned int iloscpartii, unsigned int glos
     }
 }
 
-void Wynik_konsola(unsigned int iloscpartii,unsigned int mandaty[ ])
+void Wynik_konsola(unsigned int mandaty[ ], unsigned int iloscpartii)
 {
     cout << " Podzial mandatow:" << endl;
     for (int i = 0; i < iloscpartii; i++)
@@ -165,7 +161,7 @@ void Wynik(string wyjscie, unsigned int iloscpartii, unsigned int mandaty[ ])
 {
     fstream plikwyjscia;
     if(wyjscie.empty())
-        Wynik_konsola(iloscpartii, mandaty);
+        Wynik_konsola( mandaty, iloscpartii);
     else
     {
         plikwyjscia.open("../dat/" + wyjscie + ".txt",ios::out);
@@ -183,7 +179,7 @@ int main(int ile, char ** argumenty)
     const int MAX = 100;  // maksymalna ilosc partii
     unsigned int mandaty[MAX];
     unsigned int glosy[MAX];
-    unsigned int iloscpartii = 0;
+    unsigned int iloscpartii;
     unsigned int iloscmandatow;
 
     string nazwa_pliku_wejscia;
@@ -191,10 +187,10 @@ int main(int ile, char ** argumenty)
     
     Odczytaj_argumenty(ile, argumenty, nazwa_pliku_wejscia, nazwa_pliku_wyjsca);
     
-    if(Pobieranie_danych(nazwa_pliku_wejscia, iloscpartii, MAX, glosy, iloscmandatow))
+    if(Pobieranie_danych(nazwa_pliku_wejscia, MAX, glosy, iloscpartii, iloscmandatow))
     {
         Wyzerowanie_mandatow( mandaty, iloscpartii);
-        Podzial_mandatow(MAX, iloscpartii, glosy, iloscmandatow, mandaty);
+        Podzial_mandatow(MAX, mandaty, glosy, iloscpartii, iloscmandatow);
         Wynik(nazwa_pliku_wyjsca, iloscpartii, mandaty);
     }
     return 0;
