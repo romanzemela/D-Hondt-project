@@ -1,12 +1,16 @@
-//  Created by Mateusz Piwowarski on 13.11.2017.
-//  Copyright © 2017 Penta Co. All rights reserved.
-//
-
 #include <iostream>
 #include <string>
 #include <fstream>
 
 using namespace std;
+
+/*
+ Pomoc:
+ Funkcja wyswietlajaca instrukcje programu.
+ ------------------
+ autor : Mateusz Piwowarski
+ 2017−11−27
+ */
 
 void Pomoc()
 {
@@ -23,20 +27,68 @@ void Pomoc()
     << endl << "- Ilosc partii nie powinna przekraczać 100." << endl;
 }
 
-void Poprawnosc_danych(bool & poprawne_dane,unsigned int & iloscpartii)
+/*
+ Poprawnosc_danych:
+ Funkcja sprawdzająca czy dane, ktore podaje uzytkownik są poprawne.
+ ------------------
+ parametry funkcji :
+ −−−−−−−−−−−−−−−−−−
+ poprawne_dane −− wartosc w ktorej bedzie zapisany wynik poprawnosci danych (True / False)
+ iloscpartii -- wartosc ktora bedzie sprawdzana ( czy nie przekracza liczby 100)
+ ------------------
+ autor : Mateusz Piwowarski
+ 2017−11−27
+ */
+
+void Poprawnosc_danych(bool & poprawne_dane,const unsigned int iloscpartii)
 {
     if(!cin || iloscpartii > 100)
     {
         cout << endl << " Wpisales bledne dane." << endl;
         poprawne_dane = false;
+        Pomoc();
     }
 }
+
+/*
+ Wyzerowanie_mandatow:
+ Funkcja ustawiajaca kazda wartosc tablicy na 0
+ ------------------
+ parametry funkcji :
+ −−−−−−−−−−−−−−−−−−
+ mandaty -- tablica w ktorej wartosci beda zerowane
+ iloscpartii -- ilosc elementow tablicy
+ ------------------
+ autor : Mateusz Piwowarski
+ 2017−11−27
+ */
 
 void Wyzerowanie_mandatow(unsigned int mandaty[ ], unsigned int iloscpartii)
 {
     for (int i = 0; i < iloscpartii; i++)
         mandaty[i] = 0;
 }
+
+/*
+ Odczytaj_argumenty:
+Funkcja odczytujaca parametry wywolania programu. Sa one podane w postaci przelacznikow.
+nazwa pliku wejsciowego (-i input)
+nazwa pliku wyjsciowego (-o output)
+wyswielenie pomocy (-h)
+Przelaczniki moga byc podane w dowolnej kolejnosci .
+------------------
+parametry funkcji :
+−−−−−−−−−−−−−−−−−−
+ile −− liczba parametrow przy uruchomieniu programu
+argumenty −− tablica wskaznikow na lancuchy uzytych przy uruchomienieu programu
+szInput −− parametr wyjsciowy , do ktorego zostanie zapisana odczytana nazwa pliku
+wejsciowego
+szOutput −− parameter wyjsciowy , do ktorego zostanie zapisana odczytana nazwa pliku
+wyjsciowego
+------------------
+autor : Mateusz Piwowarski
+2017−11−27
+*/
 
 void Odczytaj_argumenty(int ile , char ** argumenty , string & szInput , string & szOutput)
 {
@@ -58,6 +110,26 @@ void Odczytaj_argumenty(int ile , char ** argumenty , string & szInput , string 
             szOutput = argumenty [i + 1];
     }
 }
+
+/*
+ Wartosci_z_konsoli:
+ Funkcja przypisuje dane ktore podaje uzytkownik z standardowego wejscia.
+ poprawne_dane -- wartosc ktora przechowuje informacje czy dane podane przez uzytkownika sa poprawne.
+ ------------------
+ parametry funkcji :
+ −−−−−−−−−−−−−−−−−−
+ glosy -- tablica w ktorej beda przechowywane liczby oddanych glosow na poszczegolne partie
+ iloscpartii -- liczba partii ktora bedzie, ktora bedzie podana przez uzytkownika
+ iloscmandatow -- liczba mandatow, ktora bedzie podana przez uzytkownika
+ ------------------
+ wartosc zwracana:
+ ------------------
+ true -- wartosci ktore podal uzytkownik sa poprawne
+ false -- wartosci ktore podal uzytkownik sa niepoprawne
+ 
+ autor : Mateusz Piwowarski
+ 2017−11−27
+ */
 
 bool Wartosci_z_konsoli(unsigned int glosy[ ], unsigned int &iloscpartii, unsigned int &iloscmandatow)
 {
@@ -88,7 +160,29 @@ bool Wartosci_z_konsoli(unsigned int glosy[ ], unsigned int &iloscpartii, unsign
     return poprawne_dane;
 }
 
-bool Pobieranie_danych(string wejscie, int MAX, unsigned int glosy[ ], unsigned int &iloscpartii, unsigned int &iloscmandatow)
+/*
+ Pobieranie_danych:
+ Funkcja przypisuje dane z pliku lub z standardowego wejscia.
+ poprawne_dane -- wartosc ktora przechowuje informacje czy dane w pliku lub dane podane przez uzytkownika sa poprawne.
+ ------------------
+ parametry funkcji :
+ −−−−−−−−−−−−−−−−−−
+ wejscie -- nazwa pliku z ktorego pobieramy dane
+ MAX -- maksymalna ilosc partii
+ glosy -- tablica glosow przechowujaca liczbe oddanych glosow na partie
+ iloscpartii -- ilosc partii bioracych udzial w wyborach parlamentarnych
+ iloscmandatow -- ilosc mandatow ktore sa do podzialu w wyborach parlamentarnych
+ ------------------
+ wartosc zwracana:
+ ------------------
+ true -- wartosci w pliku lub ktore podal uzytkownik sa poprawne
+ false -- wartosci w pliku lub ktore podal uzytkownik sa niepoprawne
+ 
+ autor : Mateusz Piwowarski
+ 2017−11−27
+ */
+
+bool Pobieranie_danych(string wejscie,const int MAX, unsigned int glosy[ ], unsigned int &iloscpartii, unsigned int &iloscmandatow)
 {
     bool poprawne_dane = true;
     ifstream plikwejscia;
@@ -108,6 +202,7 @@ bool Pobieranie_danych(string wejscie, int MAX, unsigned int glosy[ ], unsigned 
         {
             poprawne_dane = false;
             cout << " Zle zapisane dane w pliku tekstowym." << endl;
+            Pomoc();
         }
         plikwejscia.close();
     }
@@ -119,11 +214,43 @@ bool Pobieranie_danych(string wejscie, int MAX, unsigned int glosy[ ], unsigned 
     }
     return poprawne_dane;
 }
+/*
+ Nowa_wartosc:
+ Funkcja zmienia ilosc glosow po otrzymaniu mandatu przez partie
+ ------------------
+ parametry funkcji :
+ −−−−−−−−−−−−−−−−−−
+ glosy -- ilosc glosow oddanych na partie
+ mandaty -- ilosc mandatow uzyskanych przez partie
+ ------------------
+ wartosc zwracana:
+ ------------------
+ ilosc glosow po otrzymaniu mandatu przez partie
+ 
+ autor : Mateusz Piwowarski
+ 2017−11−27
+ */
 
 double Nowa_wartosc(unsigned int glosy, unsigned int mandaty)
 {
     return (glosy) / (mandaty + 1);
 }
+
+/*
+ Podzial_mandatow:
+ Funkcja ktora przydziela mandaty partiom bioracych udzial w wyborach parlamentarnych
+ ------------------
+ parametry funkcji :
+ −−−−−−−−−−−−−−−−−−
+ MAX -- maksymalna ilosc partii bioracych udzial w wyborach parlamentarnych
+ mandaty -- tablica mandatow przydzielonych partiom bioracych udzial w wyborach parlamentarnych
+ glosy -- tablica glosow oddanych na partie bioracych udzial w wyborach parlamentarnych
+ iloscpartii -- ilosc partii ktore biora udzial w wyborach parlamentarnych
+ iloscmandatow -- ilosc mandatow ktore sa do podzialu w wyborach parlamentarnych
+ 
+ autor : Mateusz Piwowarski
+ 2017−11−27
+ */
 
 void Podzial_mandatow(const int MAX, unsigned int mandaty [ ], unsigned int glosy [ ], unsigned int iloscpartii, unsigned int iloscmandatow)
 {
@@ -150,12 +277,39 @@ void Podzial_mandatow(const int MAX, unsigned int mandaty [ ], unsigned int glos
     }
 }
 
+/*
+ Wynik_konsola:
+ Funkcja wyswietlajace wynik przypisania mandatow na standardowe wyjscie
+ ------------------
+ parametry funkcji :
+ −−−−−−−−−−−−−−−−−−
+ mandaty -- tablica mandatow przydzielonych partiom bioracych udzial w wyborach parlamentarnych
+ iloscpartii -- ilosc partii ktore biora udzial w wyborach parlamentarnych
+ 
+ autor : Mateusz Piwowarski
+ 2017−11−27
+ */
+
 void Wynik_konsola(unsigned int mandaty[ ], unsigned int iloscpartii)
 {
     cout << " Podzial mandatow:" << endl;
     for (int i = 0; i < iloscpartii; i++)
         cout << "partia" << i + 1 << ": " << mandaty[i] << endl;
 }
+
+/*
+ Wynik:
+ Funkcja wyswietlajace wynik przypisania mandatow do pliku lub na standardowe wyjscie
+ ------------------
+ parametry funkcji :
+ −−−−−−−−−−−−−−−−−−
+ wyjscie -- nazwa pliku do ktorego zostanie zapisany wynik
+ iloscpartii -- ilosc partii ktore biora udzial w wyborach parlamentarnych
+ mandaty -- tablica mandatow przydzielonych partiom bioracych udzial w wyborach parlamentarnych
+
+ autor : Mateusz Piwowarski
+ 2017−11−27
+ */
 
 void Wynik(string wyjscie, unsigned int iloscpartii, unsigned int mandaty[ ])
 {
