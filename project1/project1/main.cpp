@@ -19,7 +19,7 @@ void Pomoc()
     << endl << " Jezeli chcemy wykorzystac dane z pliku:" << endl
     << endl << "- Pierwsza wartoscia wymagana jest ilosc mandatow."
     << endl << "- Nastepne wartosci są glosami na poszczegolne partie. "
-    << endl << "- Wszystkie wartosci powinny byc oddzielone spacja."
+    << endl << "- Wszystkie wartosci powinny byc oddzielone."
     << endl << "- Wszystkie wartosci powinny byc liczbami naturalnymi."
     << endl << "- Ilosc partii nie powinna przekraczac 100." << endl
     << endl << " Jezeli chcemy wykorzystac dane z wejscia standardowego:" << endl
@@ -30,11 +30,12 @@ void Pomoc()
 /*
  Poprawnosc_danych:
  Funkcja sprawdzająca czy dane, ktore podaje uzytkownik są poprawne.
+ Jezeli uzytkownik wprowadzil niepoprawne dane funkcja wyswietla komunikat " Wpisales bledne dane" oraz uruchamia funckje Pomoc() wyswietlajaca intrukcje programu.
  ------------------
  parametry funkcji :
  −−−−−−−−−−−−−−−−−−
  poprawne_dane −− wartosc w ktorej bedzie zapisany wynik poprawnosci danych (True / False)
- iloscpartii -- wartosc ktora bedzie sprawdzana ( czy nie przekracza liczby 100)
+ iloscpartii -- ilosc partii bioraca udzial w wyborach parlamentarnych. Zostje sprawdzana czy jej liczba nie przekracza 100)
  ------------------
  autor : Mateusz Piwowarski
  2017−11−27
@@ -52,12 +53,12 @@ void Poprawnosc_danych(bool & poprawne_dane,const unsigned int iloscpartii)
 
 /*
  Wyzerowanie_mandatow:
- Funkcja ustawiajaca kazda wartosc tablicy na 0
+ Funkcja ustawiajaca wartosci tablicy mandatów dla kazdej partii na 0
  ------------------
  parametry funkcji :
  −−−−−−−−−−−−−−−−−−
- mandaty -- tablica w ktorej wartosci beda zerowane
- iloscpartii -- ilosc elementow tablicy
+ mandaty -- tablica mandatow ktora zostanie wyzerowana
+ iloscpartii -- ilosc partii bioracych udzial w wyborach parlamentarnych
  ------------------
  autor : Mateusz Piwowarski
  2017−11−27
@@ -113,7 +114,8 @@ void Odczytaj_argumenty(int ile , char ** argumenty , string & szInput , string 
 
 /*
  Wartosci_z_konsoli:
- Funkcja przypisuje dane ktore podaje uzytkownik z standardowego wejscia.
+ Funkcja przypisuje dane ktore podaje uzytkownik z standardowego wejscia. Pobiera liczbe partii bioracych udzial w wyborach, liczbe wszystkich mandatow ktore zostana rozdane w wyborach oraz ilosc glosow oddanych na poszczegolne partie.
+ Po pobraniu kazdej wartości uruchamia funkcje Poprawnosc_danych sprawdzajaca czy podane przez uzytkownika wartosci sa popranwe.
  poprawne_dane -- wartosc ktora przechowuje informacje czy dane podane przez uzytkownika sa poprawne.
  ------------------
  parametry funkcji :
@@ -163,7 +165,11 @@ bool Wartosci_z_konsoli(unsigned int glosy[ ], unsigned int &iloscpartii, unsign
 /*
  Pobieranie_danych:
  Funkcja przypisuje dane z pliku lub z standardowego wejscia.
- poprawne_dane -- wartosc ktora przechowuje informacje czy dane w pliku lub dane podane przez uzytkownika sa poprawne.
+ Tworzy strumień ifstream (plikwejscia) do pliku tekstowego o nazwie wejscie ktora znajduje sie w katalogu zewnetrznym dat
+ Funkcja wyswietla komunikat jezeli plik wejscia nie zostal podany w wierszu linii polecen lub pliku nie znaleziono
+ Funkcja wyswietla komunikat jezeli dane w pliku wejscia sa niepoprawne
+ plikwejscia -- strumien ifstream na plik tekstowy wejscie ktore znajduje sie w katalogu zewnetrzym dat
+ poprawne_dane -- wartosc ktora przechowuje informacje czy dane w pliku lub dane podane przez uzytkownika sa poprawne
  ------------------
  parametry funkcji :
  −−−−−−−−−−−−−−−−−−
@@ -215,7 +221,9 @@ bool Pobieranie_danych(string wejscie,const int MAX, unsigned int glosy[ ], unsi
 }
 /*
  Nowa_wartosc:
- Funkcja zmienia ilosc glosow po otrzymaniu mandatu przez partie
+ Funkcja zwraca nowa ilosc glosow po otrzymaniu mandatu przez partie: ( ilosc glosow otrzymanych w glosowaniu / ilosc uzyskanych mandatow w danym momencie + 1)
+ Wartosc zwracana jest brana pod uwage przy przydzielaniu kolejnego mandatu
+ Funckja zostaje wywolywana po otrzymaniu mandatu przez partie
  ------------------
  parametry funkcji :
  −−−−−−−−−−−−−−−−−−
@@ -238,6 +246,9 @@ double Nowa_wartosc(unsigned int glosy, unsigned int mandaty)
 /*
  Podzial_mandatow:
  Funkcja ktora przydziela mandaty partiom bioracych udzial w wyborach parlamentarnych
+ baza_glosow -- tablica ktora na poczatku funkcji przechowuje poczatkowy stan glosow na poszczegolne partie. Wraz z kazdym przyznaniem mandatu wartosci baza_glosow ulegaja zmianie. Po przyznaniu mandatu dla partii, dana partia otrzymuje nowa wartosc glosow poprzez funkcje Nowa_wartosc
+ maks -- zmienna w ktorej przechowujemy wartosc najwiekszej ilosci glosow z wszystkich partii
+ miejscemax -- zmienna ktora przechowuje informacje w ktorym miejscu tablicy baza_glosow znajduje sie najwieksza ilosc glosow
  ------------------
  parametry funkcji :
  −−−−−−−−−−−−−−−−−−
@@ -278,7 +289,8 @@ void Podzial_mandatow(const int MAX, unsigned int mandaty [ ], unsigned int glos
 
 /*
  Wynik_konsola:
- Funkcja wyswietlajace wynik przypisania mandatow na standardowe wyjscie
+ Funkcja wyswietlajace wynik przypisania mandatow na standardowe wyjscie:
+ // partia (kolejno numer partii): ilosc mandatow //
  ------------------
  parametry funkcji :
  −−−−−−−−−−−−−−−−−−
@@ -299,6 +311,9 @@ void Wynik_konsola(unsigned int mandaty[ ], unsigned int iloscpartii)
 /*
  Wynik:
  Funkcja wyswietlajace wynik przypisania mandatow do pliku lub na standardowe wyjscie
+ Jezeli string wyjscie jest pusty zostaje uruchomiona funkcja Wynik_konsola ktora wyswietli wynik wyborow na standardowe wyjscie.
+ Jezeli string wyjscie zawiera nazwe pliku w ktorym chcemy zapisac wynik wyborow funkcja tworzy strumien ofstream plikwyjscia pliku tekstowego wyjscie w katalogu zewnetrznym dat
+ W pliku tekstowym zostaje zapisany wynik wyborow: // partia (kolejno numer partii): ilosc mandatow //
  ------------------
  parametry funkcji :
  −−−−−−−−−−−−−−−−−−
@@ -312,12 +327,12 @@ void Wynik_konsola(unsigned int mandaty[ ], unsigned int iloscpartii)
 
 void Wynik(string wyjscie, unsigned int iloscpartii, unsigned int mandaty[ ])
 {
-    fstream plikwyjscia;
+    
     if(wyjscie.empty())
         Wynik_konsola( mandaty, iloscpartii);
     else
     {
-        plikwyjscia.open("../dat/" + wyjscie + ".txt",ios::out);
+        ofstream plikwyjscia("../dat/" + wyjscie + ".txt");
         if(plikwyjscia)
         {
             plikwyjscia << " Podzial mandatow:" << endl;
@@ -333,14 +348,14 @@ void Wynik(string wyjscie, unsigned int iloscpartii, unsigned int mandaty[ ])
 
 int main(int ile, char ** argumenty)
 {
-    const int MAX = 100;  // maksymalna ilosc partii
-    unsigned int mandaty[MAX];
-    unsigned int glosy[MAX];
-    unsigned int iloscpartii;
-    unsigned int iloscmandatow;
+    const int MAX = 100;  // maksymalna ilosc partii ktora moze wziac udzial w wyborach parlamentarnych
+    unsigned int mandaty[MAX]; // tablica ktora przechowuje ilosc mandatow otrzymanych przez poszczegolne partie
+    unsigned int glosy[MAX]; // tablica ktora przechowuje ilosc glosow oddanych na poszczegolne partie
+    unsigned int iloscpartii; // ilosc partii ktora bierze udzial w wyborach
+    unsigned int iloscmandatow; // ilosc mandatow do podzialu w wyborach
 
-    string nazwa_pliku_wejscia;
-    string nazwa_pliku_wyjsca;
+    string nazwa_pliku_wejscia; // nazwa pliku z ktorego beda pobierane dane
+    string nazwa_pliku_wyjsca; // nazwa pliku w ktorym beda zapisywane wyniki wyborow
     
     Odczytaj_argumenty(ile, argumenty, nazwa_pliku_wejscia, nazwa_pliku_wyjsca);
     
