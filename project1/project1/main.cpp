@@ -293,7 +293,7 @@ void Wynik_konsola(unsigned int mandaty[ ], unsigned int iloscpartii)
 {
     cout << " Podzial mandatow:" << endl;
     for (int i = 0; i < iloscpartii; i++)
-        cout << "partia" << i + 1 << ": " << mandaty[i] << endl;
+        cout << " partia " << i + 1 << ": " << mandaty[i] << endl;
 }
 
 /*
@@ -320,9 +320,10 @@ void Wynik(string wyjscie, unsigned int iloscpartii, unsigned int mandaty[ ])
         plikwyjscia.open("../dat/" + wyjscie + ".txt",ios::out);
         if(plikwyjscia)
         {
+            plikwyjscia << " Podzial mandatow:" << endl;
             for (int i = 0; i < iloscpartii; i++)
             {
-                plikwyjscia << mandaty[i] << endl;
+                plikwyjscia << " partia " << i + 1 << ": " << mandaty[i] << endl;
             }
             plikwyjscia.close();
         }
