@@ -185,9 +185,8 @@ bool Wartosci_z_konsoli(unsigned int glosy[ ], unsigned int &iloscpartii, unsign
 bool Pobieranie_danych(string wejscie,const int MAX, unsigned int glosy[ ], unsigned int &iloscpartii, unsigned int &iloscmandatow)
 {
     bool poprawne_dane = true;
-    ifstream plikwejscia;
-    plikwejscia.open("../dat/" + wejscie + ".txt", ios::in);
-    if( plikwejscia.good())
+    ifstream plikwejscia( "../dat/" + wejscie + ".txt");
+    if( plikwejscia)
     {
         plikwejscia >> iloscmandatow;
         
@@ -319,11 +318,14 @@ void Wynik(string wyjscie, unsigned int iloscpartii, unsigned int mandaty[ ])
     else
     {
         plikwyjscia.open("../dat/" + wyjscie + ".txt",ios::out);
-        for (int i = 0; i < iloscpartii; i++)
+        if(plikwyjscia)
         {
-            plikwyjscia << mandaty[i] << endl;
+            for (int i = 0; i < iloscpartii; i++)
+            {
+                plikwyjscia << mandaty[i] << endl;
+            }
+            plikwyjscia.close();
         }
-        plikwyjscia.close();
     }
     
 }
